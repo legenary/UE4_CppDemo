@@ -2,8 +2,11 @@
 
 #pragma once
 
+#include "Avatar.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/Canvas.h"
 #include "MyHUD.generated.h"
 
@@ -59,4 +62,7 @@ public:
 	virtual void DrawHUD() override;
 	void DrawMessages();
 	void addMessage(Message msg);
+
+	void DrawHealthBar();
+	
 };

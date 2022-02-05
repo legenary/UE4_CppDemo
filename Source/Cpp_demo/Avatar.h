@@ -6,10 +6,16 @@
 #include "GameFramework/Character.h"
 #include "Avatar.generated.h"
 
+class APickupItem;
+
 UCLASS()
 class CPP_DEMO_API AAvatar : public ACharacter
 {
 	GENERATED_BODY()
+
+private:
+	float HP;
+	float maxHP;
 
 public:
 	// Sets default values for this character's properties
@@ -26,6 +32,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// HP
+	inline float getHP() { return HP; }
+	inline float getMaxHP() { return maxHP; }
+	inline void decreaseHP(float amount) { HP -= amount; }
+
 	// player control
 	void MoveForward(float amount);
 	void MoveBack(float amount);
@@ -34,5 +45,11 @@ public:
 	void Yaw(float amount);
 	void Pitch(float amount);
 	
+	//Inventory system
+	TMap<FString, int> backpack;
+	TMap<FString, UTexture2D*> icons;
+	bool inventoryShowing;
+	void Pick(APickupItem *item);
+	void ToggleInventory();
 
 };
