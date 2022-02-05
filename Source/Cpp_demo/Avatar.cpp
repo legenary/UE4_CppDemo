@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PickupItem.h"
+#
 #include "Avatar.h"
 
 // Sets default values
@@ -45,33 +46,39 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 }
 
 void AAvatar::MoveForward(float amount) {
+	if (inventoryShowing) { return; }
 	if (Controller && amount) {
 		FVector fwd = GetActorForwardVector();
 		AddMovementInput(fwd, amount);
 	}
 }
 void AAvatar::MoveBack(float amount) {
+	if (inventoryShowing) { return; }
 	if (Controller && amount) {
 		FVector back = -GetActorForwardVector();
 		AddMovementInput(back, amount);
 	}
 }
 void AAvatar::MoveLeft(float amount) {
+	if (inventoryShowing) { return; }
 	if (Controller && amount) {
 		FVector left = -GetActorRightVector();
 		AddMovementInput(left, amount);
 	}
 }
 void AAvatar::MoveRight(float amount) {
+	if (inventoryShowing) { return; }
 	if (Controller && amount) {
 		FVector right = GetActorRightVector();
 		AddMovementInput(right, amount);
 	}
 }
 void AAvatar::Yaw(float amount) {
+	if (inventoryShowing) { return; }
 	AddControllerYawInput(100.f * amount * GetWorld()->GetDeltaSeconds());
 }
 void AAvatar::Pitch(float amount) {
+	if (inventoryShowing) { return; }
 	AddControllerPitchInput(-100.f * amount * GetWorld()->GetDeltaSeconds());
 }
 
@@ -79,8 +86,28 @@ void AAvatar::Pitch(float amount) {
 
 void AAvatar::ToggleInventory() {
 	if (GEngine) {
-		FString str = "Showing Inventory...";
-		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, str);
+		APlayerController *PController = GetWorld()->GetFirstPlayerController();
+		AMyHUD *hud = Cast<AMyHUD>(PController->GetHUD());
+
+		if (inventoryShowing) {
+			GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "Closing Inventory...");
+			hud->ClearWidgets();
+			inventoryShowing = false;
+			PController->bShowMouseCursor = false;
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "Showing Inventory...");
+			inventoryShowing = true;
+			PController->bShowMouseCursor = true;
+			for (TMap<FString, int>::TIterator it = backpack.CreateIterator(); it; ++it) {
+				FString fs = it->Key + " x " + FString::FromInt(it->Value);
+				UTexture2D* tex = 0;
+				if (icons.Find(it->Key)) {
+					tex = icons[it->Key];
+				}
+				hud->addWidget(Widget(Icon(fs, tex)));
+			}
+		}
 	}
 }
 void AAvatar::Pick(APickupItem *item) {

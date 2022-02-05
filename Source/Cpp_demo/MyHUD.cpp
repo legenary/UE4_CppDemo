@@ -8,6 +8,7 @@ void AMyHUD::DrawHUD() {
 
 	DrawMessages();
 	DrawHealthBar();
+	DrawWidgets();
 }
 
 void AMyHUD::DrawMessages() {
@@ -43,6 +44,20 @@ void AMyHUD::addMessage(Message msg) {
 	messages.Add(msg);
 }
 
+void AMyHUD::addWidget(Widget widget) {
+	FVector2D start(200, 200), pad(12, 12);
+	widget.size = FVector2D(100, 100);
+	widget.pos = start;
+	for (TArray<Widget>::TIterator it = widgets.CreateIterator(); it; ++it) {
+		widget.pos.X += widget.size.X + pad.X;
+		if (widget.pos.X + widget.size.X > Canvas->SizeX) {
+			widget.pos.X = start.X;
+			widget.pos.Y += widget.size.Y + pad.Y;
+		}
+	}
+	widgets.Add(widget);
+}
+
 void AMyHUD::DrawHealthBar() {
 	AAvatar *avatar = Cast<AAvatar>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 
@@ -54,4 +69,15 @@ void AMyHUD::DrawHealthBar() {
 		Canvas->SizeY - barHeight - barMargin, barWidth*percHp, barHeight);
 	FString percHpString = FString::SanitizeFloat(percHp);
 	DrawText(percHpString, FColor::Black, Canvas->SizeX - barWidth - barMargin, Canvas->SizeY - barHeight - barMargin, hudFont);
+}
+
+void AMyHUD::DrawWidgets() {
+	for (TArray<Widget>::TIterator it = widgets.CreateIterator(); it; ++it) {
+		DrawTexture(it->icon.tex, it->pos.X, it->pos.Y, it->size.X, it->size.Y, 0, 0, 1, 1);
+		DrawText(it->icon.name, FLinearColor::Yellow, it->pos.X, it->pos.Y, hudFont, .6f);
+	}
+}
+
+void AMyHUD::ClearWidgets() {
+
 }

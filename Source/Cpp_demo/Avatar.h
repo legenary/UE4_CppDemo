@@ -48,7 +48,7 @@ public:
 	//Inventory system
 	TMap<FString, int> backpack;
 	TMap<FString, UTexture2D*> icons;
-	bool inventoryShowing;
+	bool inventoryShowing = false;
 	void Pick(APickupItem *item);
 	void ToggleInventory();
 

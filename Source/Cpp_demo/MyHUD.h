@@ -44,6 +44,30 @@ struct Message
 		backColor = iBackColor;
 	}
 };
+
+struct Icon
+{
+	FString name;
+	UTexture2D *tex;
+	Icon() { name = "UNKOWN NAME"; tex = 0; }
+	Icon(FString &iName, UTexture2D * iTex) {
+		name = iName;
+		tex = iTex;
+	}
+};
+
+struct Widget
+{
+	Icon icon;
+	FVector2D pos, size;
+	Widget(Icon iIcon) {
+		icon = iIcon;
+	}
+	float left() { return pos.X; }
+	float right() { return pos.X + size.X; }
+	float top() { return pos.Y; }
+	float bottom() { return pos.Y + size.Y; }
+};
 /**
  * 
  */
@@ -59,10 +83,13 @@ public:
 		UFont* hudFont;
 
 	TArray<Message> messages;
+	TArray<Widget> widgets;
 	virtual void DrawHUD() override;
 	void DrawMessages();
 	void addMessage(Message msg);
+	void addWidget(Widget widget);
 
 	void DrawHealthBar();
-	
+	void DrawWidgets();
+	void ClearWidgets();
 };
