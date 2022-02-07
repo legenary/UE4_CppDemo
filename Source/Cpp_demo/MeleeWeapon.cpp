@@ -45,7 +45,7 @@ void AMeleeWeapon::Prox_Implementation(UPrimitiveComponent* OverlappedComp, AAct
 
 	if (!thingsHit.Contains(OtherActor)) {
 		thingsHit.Add(OtherActor);
-		OtherActor->TakeDamage(Damage + holder->BaseAttackDamage, FDamageEvent(), nullptr, this);
+		//OtherActor->TakeDamage(Damage + holder->BaseAttackDamage, FDamageEvent(), nullptr, this);
 	}
 
 }

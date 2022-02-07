@@ -97,11 +97,12 @@ void AMonster::Prox_Implementation(UPrimitiveComponent* OverlappedComp, AActor* 
 }
 
 void AMonster::SwordSwung() {
+	if (GEngine) {
+		FString msg = "Swung";
+		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, msg);
+	}
 	if (MeleeWeapon) {
 		MeleeWeapon->Swing();
-		if (GEngine) {
-			FString msg = "Swung";
-			GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, msg);
-		}
+		
 	}
 }
