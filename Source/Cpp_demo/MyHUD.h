@@ -2,8 +2,11 @@
 
 #pragma once
 
+#include "Avatar.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Kismet/GameplayStatics.h"
 #include "Engine/Canvas.h"
 #include "MyHUD.generated.h"
 
@@ -41,6 +44,33 @@ struct Message
 		backColor = iBackColor;
 	}
 };
+
+struct Icon
+{
+	FString name;
+	UTexture2D *tex;
+	Icon(): name("UNKOWN NAME"), tex(0) {}
+	Icon(FString &iName, UTexture2D *iTex): name(iName), tex(iTex) {}
+};
+
+struct Widget
+{
+	Icon icon;
+	FVector2D pos, size;
+	Widget(Icon iIcon): icon(iIcon), 
+		pos(FVector2D(0.f, 0.f)), size(FVector2D(200.f, 200.f)) {}
+
+	float left() { return pos.X; }
+	float right() { return pos.X + size.X; }
+	float top() { return pos.Y; }
+	float bottom() { return pos.Y + size.Y; }
+	float width() { return size.X; }
+	float height() { return size.Y; }
+
+	bool hit(FVector2D p) {
+		return p.X > left() && p.X < right() && p.Y < bottom() && p.Y > top();
+	}
+};
 /**
  * 
  */
@@ -55,8 +85,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUDFont)
 		UFont* hudFont;
 
+	FVector2D dims;
+
 	TArray<Message> messages;
+	TArray<Widget> widgets;
 	virtual void DrawHUD() override;
 	void DrawMessages();
 	void addMessage(Message msg);
+	void addWidget(Widget widget);
+
+	void DrawHealthBar();
+	void DrawWidgets();
+	void ClearWidgets();
+
+	void MouseClicked();
+	Widget* heldWidget;
+	void MouseMoved();
 };
