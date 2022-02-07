@@ -21,6 +21,11 @@ public:
 	// Sets default values for this character's properties
 	AAvatar();
 
+	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
+		bool Attacking = false;
+	UFUNCTION(BlueprintCallable, Category = Collision)
+		void finishedSwinging();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -61,4 +66,6 @@ public:
 	void ToggleInventory();
 
 	void MouseClicked();
+
+	
 };

@@ -103,6 +103,9 @@ void AAvatar::MouseClicked() {
 	if (inventoryShowing) {
 		hud->MouseClicked();
 	}
+	else {
+		Attacking = true;
+	}
 }
 
 
@@ -141,4 +144,7 @@ void AAvatar::Pick(APickupItem *item) {
 	}
 }
 
+void AAvatar::finishedSwinging() {
+	Attacking = false; 
+}
 
