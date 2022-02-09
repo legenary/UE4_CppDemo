@@ -4,31 +4,26 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "MeleeWeapon.generated.h"
-
-class AMonster;
+#include "Components/SphereComponent.h"
+#include "Bullet.generated.h"
 
 UCLASS()
-class CPP_DEMO_API AMeleeWeapon : public AActor
+class CPP_DEMO_API ABullet : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AMeleeWeapon();
-	AMeleeWeapon(const class FObjectInitializer& PCIP);
+	ABullet();
+	ABullet(const class FObjectInitializer& PCIP);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MeleeWeapon)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Bullet)
 		float Damage;
-	TArray<AActor*> thingsHit;
-	bool swinging;
-	AMonster* holder;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MeleeWeapon)
-		UBoxComponent* ProxBox;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MeleeWeapon)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Bullet)
 		UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Bullet)
+		USphereComponent* ProxSphere;
 	UFUNCTION(BlueprintNativeEvent, Category = Collision)
 		void Prox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
@@ -40,7 +35,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	void Reset();
 
 };

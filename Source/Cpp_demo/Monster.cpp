@@ -5,22 +5,13 @@
 
 AMonster::AMonster(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
-	Speed = 25;
-	MonsterHP = 20;
-	MonsterExp = 0;
-	BPLoot = nullptr;
-	BaseAttackDamage = 1;
-	AttackTimeout = 1.5f;
-	TimeSinceLastStrike = 0;
-	movingToPlayer = true;
-	Attacking = false;
-
 	SightSphere = PCIP.CreateDefaultSubobject<USphereComponent>(this, TEXT("Sight Sphere"));
 	SightSphere->SetupAttachment(RootComponent);
 
 	AttackRangeSphere = PCIP.CreateDefaultSubobject<USphereComponent>(this, TEXT("Attack Range Sphere"));
 	AttackRangeSphere->SetupAttachment(RootComponent);
-	AttackRangeSphere->OnComponentBeginOverlap.AddDynamic(this, &AMonster::Prox);
+
+	//movingToPlayer = true;
 }
 
 void AMonster::PostInitializeComponents()
@@ -32,6 +23,7 @@ void AMonster::PostInitializeComponents()
 		if (MeleeWeapon) {
 			const USkeletalMeshSocket* socket = this->GetMesh()->GetSocketByName("Muzzle_01");
 			socket->AttachActor(Cast<AActor>(MeleeWeapon), this->GetMesh());
+			MeleeWeapon->holder = this;
 		}
 	}
 }
@@ -57,8 +49,6 @@ void AMonster::Tick(float DeltaTime)
 
 
 	if (!isInSightSphere(distToPlayer)) {
-		//movingToPlayer = false;
-		
 		return;
 	}
 
@@ -66,14 +56,25 @@ void AMonster::Tick(float DeltaTime)
 	toPlayerRotation.Pitch = 0;
 	RootComponent->SetWorldRotation(toPlayerRotation);
 
-	
-
 	if (!isInAttackRangeSphere(distToPlayer)) {
 		AddMovementInput(toPlayer, Speed*DeltaTime);
-		Attacking = false;
+		MeleeWeapon->swinging = false;
+		TimeSinceLastStrike = 0;
 	}
-	else {
-		Attacking = true;
+	else {	// attack mode
+		if (!TimeSinceLastStrike) {
+			Attack(avatar);
+			if (!nAttack) {
+				nAttack++;	// give the monster an attack instruct
+			}
+			MeleeWeapon->swinging = true;
+			GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, FString::FromInt(nAttack));
+		}
+		TimeSinceLastStrike += DeltaTime;
+		if (TimeSinceLastStrike > AttackTimeout) {
+			TimeSinceLastStrike = 0;
+		}
+		
 	}
 
 	
@@ -87,22 +88,31 @@ void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void AMonster::finishedSwinging() {
+	nAttack--;	// attack instruct executed
+}
 
-void AMonster::Prox_Implementation(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
-	//
-	if (Cast<AAvatar>(OtherActor)) {
-		movingToPlayer = !movingToPlayer;
+void AMonster::Attack(AActor* thing) {
+
+}
+
+void AMonster::SwordReset() {
+	// reset weapon
+	if (MeleeWeapon) {
+		MeleeWeapon->Reset();
 	}
 }
 
-void AMonster::SwordSwung() {
-	if (GEngine) {
-		FString msg = "Swung";
-		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, msg);
+float AMonster::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
+	AController* EventInstigator, AActor* DamageCauser) {
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	MonsterHP -= Damage;
+
+	// if he goes below 0 hp, he will resurrect
+	if (MonsterHP <= 0)
+	{
+		Destroy();
 	}
-	if (MeleeWeapon) {
-		MeleeWeapon->Swing();
-		
-	}
+	return Damage;
 }

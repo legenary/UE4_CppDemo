@@ -36,6 +36,7 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 	InputComponent->BindAction("Inventory", IE_Pressed, this, &AAvatar::ToggleInventory);
 	InputComponent->BindAction("MouseClickedMLB", IE_Pressed, this, &AAvatar::MouseClicked);
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::StartJump);
 
 	InputComponent->BindAxis("Forward", this, &AAvatar::MoveForward);
 	InputComponent->BindAxis("Back", this, &AAvatar::MoveBack);
@@ -104,7 +105,10 @@ void AAvatar::MouseClicked() {
 		hud->MouseClicked();
 	}
 	else {
-		Attacking = true;
+		// can only increase attack number when no attack is in excution
+		if (!nAttack) {
+			nAttack++;
+		}
 	}
 }
 
@@ -145,6 +149,35 @@ void AAvatar::Pick(APickupItem *item) {
 }
 
 void AAvatar::finishedSwinging() {
-	Attacking = false; 
+	nAttack--;
+}
+
+void AAvatar::StartJump() {
+	Jumping = true;
+}
+
+void AAvatar::finishedJumping() {
+	Jumping = false;
+}
+
+float AAvatar::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
+	AController* EventInstigator, AActor* DamageCauser) {
+	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+
+	
+
+	HP -= Damage;
+
+	// add some knockback that gets applied over a few frames
+	//Knockback = GetActorLocation() - DamageCauser->GetActorLocation();
+	//Knockback.Normalize();
+	//Knockback *= Damage * 500;
+
+	// if he goes below 0 hp, he will resurrect
+	if (HP <= 0)
+	{
+		HP = maxHP; //resurrect
+	}
+	return Damage;
 }
 

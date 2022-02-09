@@ -22,9 +22,13 @@ public:
 	AAvatar();
 
 	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
-		bool Attacking = false;
+		int32 nAttack = 0;
+	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
+		bool Jumping = false;
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void finishedSwinging();
+	UFUNCTION(BlueprintCallable, Category = Collision)
+		void finishedJumping();
 
 protected:
 	// Called when the game starts or when spawned
@@ -65,7 +69,12 @@ public:
 	void Pick(APickupItem *item);
 	void ToggleInventory();
 
+	// AI
 	void MouseClicked();
+	void StartJump();
+	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, 
+		AController* EventInstigator, AActor* DamageCauser) override;
+
 
 	
 };
