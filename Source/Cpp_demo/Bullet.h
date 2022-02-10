@@ -8,6 +8,8 @@
 #include "Components/SphereComponent.h"
 #include "Bullet.generated.h"
 
+class AMonster;
+
 UCLASS()
 class CPP_DEMO_API ABullet : public AActor
 {
@@ -15,11 +17,10 @@ class CPP_DEMO_API ABullet : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	ABullet();
 	ABullet(const class FObjectInitializer& PCIP);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Bullet)
-		float Damage;
+		float Damage = 10;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Bullet)
 		UStaticMeshComponent* Mesh;
 	ACharacter* firer;
@@ -36,5 +37,8 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	float existTime = 0.f;
+	float dieTime = 3.f;
+	float damageFromHolder = 0.f;
 
 };

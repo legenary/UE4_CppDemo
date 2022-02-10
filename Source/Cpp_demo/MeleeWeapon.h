@@ -22,8 +22,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MeleeWeapon)
 		float Damage = 3;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MeleeWeapon)
-		float DamageFromHolder = 0;
 	TArray<AActor*> thingsHit;
 	bool swinging = false;
 	ACharacter* holder;
@@ -44,5 +42,5 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void ResetHitList();
-
+	float damageFromHolder = 0.f;
 };

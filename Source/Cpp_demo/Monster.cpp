@@ -6,7 +6,6 @@
 AMonster::AMonster(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
 	PrimaryActorTick.bCanEverTick = true;
-
 	// sight sphere
 	SightSphere = PCIP.CreateDefaultSubobject<USphereComponent>
 		(this, TEXT("Sight Sphere"));
@@ -34,7 +33,7 @@ void AMonster::PostInitializeComponents()
 			const USkeletalMeshSocket* socket = this->GetMesh()->GetSocketByName("Muzzle_01");
 			socket->AttachActor(Cast<AActor>(MeleeWeapon), this->GetMesh());
 			MeleeWeapon->holder = this;
-			MeleeWeapon->DamageFromHolder = this->BaseAttackDamage;
+			MeleeWeapon->damageFromHolder = this->BaseAttackDamage;
 		}
 	}
 }
@@ -63,28 +62,52 @@ void AMonster::Tick(float DeltaTime)
 		return;
 	}
 
+	// start facing player
 	FRotator toPlayerRotation = toPlayer.Rotation();
 	toPlayerRotation.Pitch = 0;
 	RootComponent->SetWorldRotation(toPlayerRotation);
 
-	if (!isInMeleeRangeSphere(distToPlayer)) {
-		AddMovementInput(toPlayer, Speed*DeltaTime);
-
-		if (MeleeWeapon) { 
-			MeleeWeapon->swinging = false;
-			MeleeWeapon->ResetHitList();
+	// shooting mode
+	if (!MeleeWeapon && BPBullet) {
+		if (!isInShootingRangeSphere(distToPlayer)) {
+			// if outside shooting range, move to player
+			AddMovementInput(toPlayer, Speed*DeltaTime);
 		}
-		TimeSinceLastStrike = 0;
-	}
-	else {	// attack mode
-		if (!TimeSinceLastStrike) {
+		else if (isInMeleeRangeSphere(distToPlayer)) {
+			// if inside melee range, move away from player (in slower speed)
+			AddMovementInput(-toPlayer, Speed/2*DeltaTime);
+		}
+		else {
+			// atack
 			Attack(avatar);
+			TimeSinceLastStrike += DeltaTime;
+			if (TimeSinceLastStrike > AttackTimeout) {
+				TimeSinceLastStrike = 0;
+			}
 		}
-		TimeSinceLastStrike += DeltaTime;
-		if (TimeSinceLastStrike > AttackTimeout) {
+	}
+	// melee attack mode
+	else {
+		if (!isInMeleeRangeSphere(distToPlayer)) {
+			// if outside melee range, move to player
+			AddMovementInput(toPlayer, Speed*DeltaTime);
+			if (MeleeWeapon) {
+				MeleeWeapon->swinging = false;
+				MeleeWeapon->ResetHitList();
+			}
 			TimeSinceLastStrike = 0;
 		}
+		else {
+			// if inside melee range, attack
+			Attack(avatar);
+			TimeSinceLastStrike += DeltaTime;
+			if (TimeSinceLastStrike > AttackTimeout) {
+				TimeSinceLastStrike = 0;
+			}
+		}
 	}
+
+	
 }
 
 // Called to bind functionality to input
@@ -103,7 +126,11 @@ void AMonster::finishedSwinging() {
 }
 
 void AMonster::Attack(AActor* thing) {
-	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "attacking.");
+	// not yet
+	if (TimeSinceLastStrike) {
+		return;
+	}
+	
 	// if have melee weapon
 	if (MeleeWeapon) {
 		if (!nAttack) {
@@ -117,19 +144,23 @@ void AMonster::Attack(AActor* thing) {
 	// if no weapon equipped, spawn bullet
 	else if (BPBullet) {
 		FVector fwd = GetActorForwardVector();
-		FVector nozzle = GetMesh()->GetBoneLocation("hand_r");
-		nozzle += fwd * 155;
+		FVector nozzle = GetMesh()->GetBoneLocation("hand_l");
+		nozzle += fwd * 10;
 		FVector toOpponent = thing->GetActorLocation() - nozzle;
 		toOpponent.Normalize();
 		ABullet* bullet = GetWorld()->SpawnActor<ABullet>
 			(BPBullet, nozzle, RootComponent->GetComponentRotation());
 		if (bullet) {
 			bullet->firer = this;
-			bullet->ProxSphere->AddImpulse(fwd * BulletLaunchImpulse);
+			bullet->damageFromHolder = this->BaseAttackDamage;
+			bullet->ProxSphere->AddImpulse(toOpponent * BulletLaunchImpulse);
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Yellow, "no bullet spawned.");
 		}
+	}
+	else {
+		return;
 	}
 }
 

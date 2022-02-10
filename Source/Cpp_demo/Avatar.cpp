@@ -24,8 +24,7 @@ void AAvatar::PostInitializeComponents()
 			const USkeletalMeshSocket* socket = this->GetMesh()->GetSocketByName("Muzzle_01");
 			socket->AttachActor(Cast<AActor>(MeleeWeapon), this->GetMesh());
 			MeleeWeapon->holder = this;
-			MeleeWeapon->DamageFromHolder = this->BaseAttackDamage;
-
+			MeleeWeapon->damageFromHolder = this->BaseAttackDamage;
 		}
 	}
 }

@@ -21,19 +21,19 @@ class CPP_DEMO_API AMonster : public ACharacter
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
-		float Speed = 25;
+		float Speed = 70.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
-		float MonsterHP = 20;
+		float MonsterHP = 20.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		int32 MonsterExp = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
-		float BaseAttackDamage = 5;
+		float BaseAttackDamage = 5.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		float AttackTimeout = 2.f;
 	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
 		int32 nAttack = 0;
 	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
-		float TimeSinceLastStrike = 0;
+		float TimeSinceLastStrike = 0.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		UClass* BPLoot = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
@@ -43,7 +43,7 @@ public:
 		UClass* BPBullet;
 	ABullet* Bullet;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
-		float BulletLaunchImpulse = 100;
+		float BulletLaunchImpulse = 500.f;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MonsterProperties)
 		USphereComponent* SightSphere;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MonsterProperties)
@@ -78,6 +78,9 @@ public:
 	}
 	inline bool isInMeleeRangeSphere(float d) {
 		return d < MeleeRangeSphere->GetScaledSphereRadius();
+	}
+	inline bool isInShootingRangeSphere(float d) {
+		return d < ShootingRangeSphere->GetScaledSphereRadius();
 	}
 	void Attack(AActor* thing);
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,

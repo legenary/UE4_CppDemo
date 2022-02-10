@@ -2,17 +2,16 @@
 
 
 #include "Bullet.h"
-
-// Sets default values
-ABullet::ABullet()
-{
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
-}
+#include "Monster.h"
 
 ABullet::ABullet(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
+	firer = nullptr;
+
+	PrimaryActorTick.bCanEverTick = true;
+	//PrimaryActorTick.bStartWithTickEnabled = true;
+	//PrimaryActorTick.bAllowTickOnDedicatedServer = true;
+
 	Mesh = PCIP.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("Mesh"));
 	ProxSphere = PCIP.CreateDefaultSubobject<USphereComponent>(this, TEXT("ProxSphere"));
 
@@ -20,8 +19,6 @@ ABullet::ABullet(const class FObjectInitializer& PCIP) : Super(PCIP)
 	Mesh->SetupAttachment(RootComponent);
 
 	ProxSphere->OnComponentBeginOverlap.AddDynamic(this, &ABullet::Prox);
-
-	Damage = 1;
 }
 
 // Called when the game starts or when spawned
@@ -36,14 +33,23 @@ void ABullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	existTime += DeltaTime;
+	if (existTime > dieTime) {
+		Destroy();
+	}
 }
 
 void ABullet::Prox_Implementation(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
-	if (OtherComp != OtherActor->GetRootComponent()) {	// if didn't hit root component
+
+	if (OtherComp != OtherActor->GetRootComponent()) {	 // if not hit root 
 		return;
 	}
 
-	// OtherActor->TakeDamage(Damage + holder->BaseAttackDamage, FDamageEvent(), nullptr, this);
+	if (OtherActor == firer) {	 // if hit firer
+		return;
+	}
+	
+	OtherActor->TakeDamage(Damage + damageFromHolder, FDamageEvent(), nullptr, this);
 	Destroy();
 }
