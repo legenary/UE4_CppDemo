@@ -24,7 +24,7 @@ void AAvatar::PostInitializeComponents()
 			const USkeletalMeshSocket* socket = this->GetMesh()->GetSocketByName("Muzzle_01");
 			socket->AttachActor(Cast<AActor>(MeleeWeapon), this->GetMesh());
 			MeleeWeapon->holder = this;
-			MeleeWeapon->damageFromHolder = this->BaseAttackDamage;
+			MeleeWeapon->damageFromHolder = this->BaseMeleeDamage;
 		}
 	}
 }
@@ -119,7 +119,7 @@ void AAvatar::MouseClicked() {
 		hud->MouseClicked();
 	}
 	else {
-		MeleeAttack();
+		Melee();
 	}
 }
 
@@ -160,7 +160,7 @@ void AAvatar::Pick(APickupItem *item) {
 }
 
 void AAvatar::finishedSwinging() {
-	nAttack--;
+	nMelee--;
 	if (MeleeWeapon) { 
 		MeleeWeapon->swinging = false;
 		MeleeWeapon->ResetHitList();
@@ -194,10 +194,10 @@ float AAvatar::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	return Damage;
 }
 
-void AAvatar::MeleeAttack() {
+void AAvatar::Melee() {
 	// can only increase attack number when no attack is in excution
-	if (!nAttack) {
-		nAttack++;
+	if (!nMelee) {
+		nMelee++;
 		if (MeleeWeapon) {
 			MeleeWeapon->swinging = true;
 			MeleeWeapon->ResetHitList();

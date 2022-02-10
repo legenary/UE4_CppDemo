@@ -24,7 +24,7 @@ public:
 	AAvatar();
 
 	UPROPERTY(BlueprintReadOnly, Category = AvatarProperties)
-		int32 nAttack = 0;
+		int32 nMelee = 0;
 	UPROPERTY(BlueprintReadOnly, Category = AvatarProperties)
 		bool Jumping = false;
 	UFUNCTION(BlueprintCallable, Category = Collision)
@@ -35,7 +35,7 @@ public:
 		UClass* BPMeleeWeapon;
 	AMeleeWeapon* MeleeWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
-		float BaseAttackDamage = 5;
+		float BaseMeleeDamage = 5;
 
 
 protected:
@@ -85,7 +85,7 @@ public:
 	void StartJump();
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, 
 		AController* EventInstigator, AActor* DamageCauser) override;
-	void MeleeAttack();
+	void Melee();
 
 	
 };

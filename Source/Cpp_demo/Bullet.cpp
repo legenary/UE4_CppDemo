@@ -6,7 +6,7 @@
 
 ABullet::ABullet(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
-	firer = nullptr;
+	shooter = nullptr;
 
 	PrimaryActorTick.bCanEverTick = true;
 	//PrimaryActorTick.bStartWithTickEnabled = true;
@@ -46,7 +46,7 @@ void ABullet::Prox_Implementation(UPrimitiveComponent* OverlappedComp, AActor* O
 		return;
 	}
 
-	if (OtherActor == firer) {	 // if hit firer
+	if (OtherActor == shooter) {	 // if hit shooter
 		return;
 	}
 	
