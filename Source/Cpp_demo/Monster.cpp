@@ -7,12 +7,20 @@ AMonster::AMonster(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	SightSphere = PCIP.CreateDefaultSubobject<USphereComponent>(this, TEXT("Sight Sphere"));
+	// sight sphere
+	SightSphere = PCIP.CreateDefaultSubobject<USphereComponent>
+		(this, TEXT("Sight Sphere"));
 	SightSphere->SetupAttachment(RootComponent);
 
-	AttackRangeSphere = PCIP.CreateDefaultSubobject<USphereComponent>(this, TEXT("Attack Range Sphere"));
-	AttackRangeSphere->SetupAttachment(RootComponent);
+	// melee range
+	MeleeRangeSphere = PCIP.CreateDefaultSubobject<USphereComponent>
+		(this, TEXT("Melee Range Sphere"));
+	MeleeRangeSphere->SetupAttachment(RootComponent);
 
+	// shooting range
+	ShootingRangeSphere = PCIP.CreateDefaultSubobject<USphereComponent>
+		(this, TEXT("Shooting Range Sphere"));
+	ShootingRangeSphere->SetupAttachment(RootComponent);
 }
 
 void AMonster::PostInitializeComponents()
@@ -59,7 +67,7 @@ void AMonster::Tick(float DeltaTime)
 	toPlayerRotation.Pitch = 0;
 	RootComponent->SetWorldRotation(toPlayerRotation);
 
-	if (!isInAttackRangeSphere(distToPlayer)) {
+	if (!isInMeleeRangeSphere(distToPlayer)) {
 		AddMovementInput(toPlayer, Speed*DeltaTime);
 
 		if (MeleeWeapon) { 
@@ -70,14 +78,7 @@ void AMonster::Tick(float DeltaTime)
 	}
 	else {	// attack mode
 		if (!TimeSinceLastStrike) {
-			//Attack(avatar);
-			if (!nAttack) {
-				nAttack++;	// give the monster an attack instruct
-				if (MeleeWeapon) { 
-					MeleeWeapon->swinging = true;
-					MeleeWeapon->ResetHitList();
-				}
-			}
+			Attack(avatar);
 		}
 		TimeSinceLastStrike += DeltaTime;
 		if (TimeSinceLastStrike > AttackTimeout) {
@@ -101,9 +102,36 @@ void AMonster::finishedSwinging() {
 	}
 }
 
-//void AMonster::Attack(AActor* thing) {
-//
-//}
+void AMonster::Attack(AActor* thing) {
+	GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "attacking.");
+	// if have melee weapon
+	if (MeleeWeapon) {
+		if (!nAttack) {
+			nAttack++;	// give the monster an attack instruct
+			if (MeleeWeapon) {
+				MeleeWeapon->swinging = true;
+				MeleeWeapon->ResetHitList();
+			}
+		}
+	}
+	// if no weapon equipped, spawn bullet
+	else if (BPBullet) {
+		FVector fwd = GetActorForwardVector();
+		FVector nozzle = GetMesh()->GetBoneLocation("hand_r");
+		nozzle += fwd * 155;
+		FVector toOpponent = thing->GetActorLocation() - nozzle;
+		toOpponent.Normalize();
+		ABullet* bullet = GetWorld()->SpawnActor<ABullet>
+			(BPBullet, nozzle, RootComponent->GetComponentRotation());
+		if (bullet) {
+			bullet->firer = this;
+			bullet->ProxSphere->AddImpulse(fwd * BulletLaunchImpulse);
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Yellow, "no bullet spawned.");
+		}
+	}
+}
 
 float AMonster::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser) {

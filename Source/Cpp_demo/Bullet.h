@@ -22,6 +22,7 @@ public:
 		float Damage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Bullet)
 		UStaticMeshComponent* Mesh;
+	ACharacter* firer;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Bullet)
 		USphereComponent* ProxSphere;
 	UFUNCTION(BlueprintNativeEvent, Category = Collision)

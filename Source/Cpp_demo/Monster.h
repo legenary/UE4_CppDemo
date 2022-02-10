@@ -41,12 +41,15 @@ public:
 	AMeleeWeapon* MeleeWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		UClass* BPBullet;
+	ABullet* Bullet;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
-		float BulletLaunchImpulse;
+		float BulletLaunchImpulse = 100;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MonsterProperties)
 		USphereComponent* SightSphere;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MonsterProperties)
-		USphereComponent* AttackRangeSphere;
+		USphereComponent* MeleeRangeSphere;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MonsterProperties)
+		USphereComponent* ShootingRangeSphere;
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void finishedSwinging();
 
@@ -73,10 +76,10 @@ public:
 	inline bool isInSightSphere(float d) {
 		return d < SightSphere->GetScaledSphereRadius();
 	}
-	inline bool isInAttackRangeSphere(float d) {
-		return d < AttackRangeSphere->GetScaledSphereRadius();
+	inline bool isInMeleeRangeSphere(float d) {
+		return d < MeleeRangeSphere->GetScaledSphereRadius();
 	}
-	//void Attack(AActor* thing);
+	void Attack(AActor* thing);
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 		AController* EventInstigator, AActor* DamageCauser) override;
 	void Die();
