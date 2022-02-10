@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Avatar.generated.h"
 
 class APickupItem;
+class AMeleeWeapon;
 
 UCLASS()
 class CPP_DEMO_API AAvatar : public ACharacter
@@ -21,14 +23,20 @@ public:
 	// Sets default values for this character's properties
 	AAvatar();
 
-	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
+	UPROPERTY(BlueprintReadOnly, Category = AvatarProperties)
 		int32 nAttack = 0;
-	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
+	UPROPERTY(BlueprintReadOnly, Category = AvatarProperties)
 		bool Jumping = false;
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void finishedSwinging();
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void finishedJumping();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
+		UClass* BPMeleeWeapon;
+	AMeleeWeapon* MeleeWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
+		float BaseAttackDamage = 5;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -69,12 +77,15 @@ public:
 	void Pick(APickupItem *item);
 	void ToggleInventory();
 
+	// Melee weapon intializer
+	virtual void PostInitializeComponents() override;
+
 	// AI
 	void MouseClicked();
 	void StartJump();
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, 
 		AController* EventInstigator, AActor* DamageCauser) override;
-
+	void MeleeAttack();
 
 	
 };

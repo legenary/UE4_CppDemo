@@ -21,10 +21,12 @@ public:
 	AMeleeWeapon(const class FObjectInitializer& PCIP);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MeleeWeapon)
-		float Damage;
+		float Damage = 3;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MeleeWeapon)
+		float DamageFromHolder = 0;
 	TArray<AActor*> thingsHit;
-	bool swinging;
-	AMonster* holder;
+	bool swinging = false;
+	ACharacter* holder;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MeleeWeapon)
 		UBoxComponent* ProxBox;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MeleeWeapon)
@@ -41,6 +43,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void Reset();
+	void ResetHitList();
 
 };

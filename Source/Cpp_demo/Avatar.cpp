@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "PickupItem.h"
-#
+#include "MeleeWeapon.h"
 #include "Avatar.h"
 
 // Sets default values
@@ -12,6 +12,22 @@ AAvatar::AAvatar()
 
 	HP = 80;
 	maxHP = 100;
+}
+
+void AAvatar::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (BPMeleeWeapon) {
+		MeleeWeapon = GetWorld()->SpawnActor<AMeleeWeapon>(BPMeleeWeapon, FVector(), FRotator());
+		if (MeleeWeapon) {
+			const USkeletalMeshSocket* socket = this->GetMesh()->GetSocketByName("Muzzle_01");
+			socket->AttachActor(Cast<AActor>(MeleeWeapon), this->GetMesh());
+			MeleeWeapon->holder = this;
+			MeleeWeapon->DamageFromHolder = this->BaseAttackDamage;
+
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -25,7 +41,6 @@ void AAvatar::BeginPlay()
 void AAvatar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -105,10 +120,7 @@ void AAvatar::MouseClicked() {
 		hud->MouseClicked();
 	}
 	else {
-		// can only increase attack number when no attack is in excution
-		if (!nAttack) {
-			nAttack++;
-		}
+		MeleeAttack();
 	}
 }
 
@@ -120,14 +132,14 @@ void AAvatar::ToggleInventory() {
 		AMyHUD *hud = Cast<AMyHUD>(PController->GetHUD());
 
 		if (inventoryShowing) {
-			GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "Closing Inventory...");
+			//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "Closing Inventory...");
 			// unload HUD widgets
 			hud->ClearWidgets();
 			inventoryShowing = false;
 			PController->bShowMouseCursor = false;
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "Showing Inventory...");
+			//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "Showing Inventory...");
 			inventoryShowing = true;
 			PController->bShowMouseCursor = true;
 			for (TMap<FString, Properties>::TIterator it = backpack.CreateIterator(); it; ++it) {
@@ -150,6 +162,10 @@ void AAvatar::Pick(APickupItem *item) {
 
 void AAvatar::finishedSwinging() {
 	nAttack--;
+	if (MeleeWeapon) { 
+		MeleeWeapon->swinging = false;
+		MeleeWeapon->ResetHitList();
+	}
 }
 
 void AAvatar::StartJump() {
@@ -163,8 +179,6 @@ void AAvatar::finishedJumping() {
 float AAvatar::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser) {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-
-	
 
 	HP -= Damage;
 
@@ -181,3 +195,13 @@ float AAvatar::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	return Damage;
 }
 
+void AAvatar::MeleeAttack() {
+	// can only increase attack number when no attack is in excution
+	if (!nAttack) {
+		nAttack++;
+		if (MeleeWeapon) {
+			MeleeWeapon->swinging = true;
+			MeleeWeapon->ResetHitList();
+		}
+	}
+}

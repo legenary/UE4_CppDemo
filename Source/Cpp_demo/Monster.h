@@ -27,9 +27,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		int32 MonsterExp = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
-		float BaseAttackDamage = 1;
+		float BaseAttackDamage = 5;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
-		float AttackTimeout = 2.5.f;
+		float AttackTimeout = 2.f;
 	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
 		int32 nAttack = 0;
 	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
@@ -47,8 +47,6 @@ public:
 		USphereComponent* SightSphere;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MonsterProperties)
 		USphereComponent* AttackRangeSphere;
-	UFUNCTION(BlueprintCallable, Category = Collision)
-		void SwordReset();
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void finishedSwinging();
 
@@ -78,8 +76,9 @@ public:
 	inline bool isInAttackRangeSphere(float d) {
 		return d < AttackRangeSphere->GetScaledSphereRadius();
 	}
-	void Attack(AActor* thing);
+	//void Attack(AActor* thing);
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 		AController* EventInstigator, AActor* DamageCauser) override;
+	void Die();
 	
 };

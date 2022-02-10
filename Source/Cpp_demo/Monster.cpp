@@ -5,13 +5,14 @@
 
 AMonster::AMonster(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	SightSphere = PCIP.CreateDefaultSubobject<USphereComponent>(this, TEXT("Sight Sphere"));
 	SightSphere->SetupAttachment(RootComponent);
 
 	AttackRangeSphere = PCIP.CreateDefaultSubobject<USphereComponent>(this, TEXT("Attack Range Sphere"));
 	AttackRangeSphere->SetupAttachment(RootComponent);
 
-	//movingToPlayer = true;
 }
 
 void AMonster::PostInitializeComponents()
@@ -20,10 +21,12 @@ void AMonster::PostInitializeComponents()
 
 	if (BPMeleeWeapon) {
 		MeleeWeapon = GetWorld()->SpawnActor<AMeleeWeapon>(BPMeleeWeapon, FVector(), FRotator());
+		// in this script, should always check MeleeWeapon existence
 		if (MeleeWeapon) {
 			const USkeletalMeshSocket* socket = this->GetMesh()->GetSocketByName("Muzzle_01");
 			socket->AttachActor(Cast<AActor>(MeleeWeapon), this->GetMesh());
 			MeleeWeapon->holder = this;
+			MeleeWeapon->DamageFromHolder = this->BaseAttackDamage;
 		}
 	}
 }
@@ -58,27 +61,29 @@ void AMonster::Tick(float DeltaTime)
 
 	if (!isInAttackRangeSphere(distToPlayer)) {
 		AddMovementInput(toPlayer, Speed*DeltaTime);
-		MeleeWeapon->swinging = false;
+
+		if (MeleeWeapon) { 
+			MeleeWeapon->swinging = false;
+			MeleeWeapon->ResetHitList();
+		}
 		TimeSinceLastStrike = 0;
 	}
 	else {	// attack mode
 		if (!TimeSinceLastStrike) {
-			Attack(avatar);
+			//Attack(avatar);
 			if (!nAttack) {
 				nAttack++;	// give the monster an attack instruct
+				if (MeleeWeapon) { 
+					MeleeWeapon->swinging = true;
+					MeleeWeapon->ResetHitList();
+				}
 			}
-			MeleeWeapon->swinging = true;
-			GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, FString::FromInt(nAttack));
 		}
 		TimeSinceLastStrike += DeltaTime;
 		if (TimeSinceLastStrike > AttackTimeout) {
 			TimeSinceLastStrike = 0;
 		}
-		
 	}
-
-	
-
 }
 
 // Called to bind functionality to input
@@ -90,29 +95,33 @@ void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AMonster::finishedSwinging() {
 	nAttack--;	// attack instruct executed
-}
-
-void AMonster::Attack(AActor* thing) {
-
-}
-
-void AMonster::SwordReset() {
-	// reset weapon
 	if (MeleeWeapon) {
-		MeleeWeapon->Reset();
+		MeleeWeapon->swinging = false;
+		MeleeWeapon->ResetHitList();
 	}
 }
+
+//void AMonster::Attack(AActor* thing) {
+//
+//}
 
 float AMonster::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser) {
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-
+	
 	MonsterHP -= Damage;
 
 	// if he goes below 0 hp, he will resurrect
 	if (MonsterHP <= 0)
 	{
-		Destroy();
+		Die();
 	}
 	return Damage;
+}
+
+void AMonster::Die() {
+	if (MeleeWeapon) {
+		MeleeWeapon->Destroy();
+	}
+	Destroy();
 }

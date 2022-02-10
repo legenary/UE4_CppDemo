@@ -7,7 +7,7 @@
 // Sets default values
 AMeleeWeapon::AMeleeWeapon(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
-	Damage = 3;
+
 	swinging = false;
 	holder = nullptr;
 
@@ -36,36 +36,32 @@ void AMeleeWeapon::Tick(float DeltaTime)
 // for hitting on actor in one swing
 void AMeleeWeapon::Prox_Implementation(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
-	
+
+
 	if (!swinging ) { // if not swinging
-		//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "1");
+		//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "not swinging");
 		return;
 	}
 
 	if (OtherComp != OtherActor->GetRootComponent()) { // if didn't hit root component
-		//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "2");
+		//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "not root");
 		return;
 	}
 
 	if (OtherActor == holder) { // if weapon holder
-		//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "3");
+		//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "touch self");
 		return; 
 	}
 
-	
-	
-	
+	//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "pass");
 	if (!thingsHit.Contains(OtherActor)) {
 		thingsHit.Add(OtherActor);
-		//FString msg = FString::FromInt(int32(Damage + holder->BaseAttackDamage));
-		//GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, msg);
-		OtherActor->TakeDamage(Damage + holder->BaseAttackDamage, FDamageEvent(), nullptr, this);
+		OtherActor->TakeDamage(Damage + DamageFromHolder, FDamageEvent(), nullptr, this);
 	}
 
 }
 
-void AMeleeWeapon::Reset() {
+void AMeleeWeapon::ResetHitList() {
 	thingsHit.Empty();
-	swinging = false;
 }
 
