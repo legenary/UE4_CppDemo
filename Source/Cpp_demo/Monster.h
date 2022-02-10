@@ -63,6 +63,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void finishedSwinging();
 
+	UPROPERTY(BlueprintReadWrite, Category = MonsterProperties)
+		bool hitReact = false;
+
 	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
 		bool Die = false;
 	UFUNCTION(BlueprintCallable, Category = Collision)

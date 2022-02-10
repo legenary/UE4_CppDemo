@@ -50,8 +50,8 @@ void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// shit happens when you die
-	if (Die) {
+	// shit happens when you die or get hit
+	if (Die || hitReact) {
 		return;
 	}
 
@@ -191,9 +191,14 @@ float AMonster::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	if (MonsterHP <= 0)
 	{
 		Die = true;
+		return Damage;
 	}
+
+	// if didn't die, perform hit reaction
+	hitReact = true;
 	return Damage;
 }
+
 
 void AMonster::DestroyAll() {
 	if (MeleeWeapon) {
