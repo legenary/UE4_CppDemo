@@ -50,6 +50,11 @@ void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// shit happens when you die
+	if (Die) {
+		return;
+	}
+
 	AAvatar* avatar = Cast<AAvatar>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (!avatar) { return; }
 
@@ -185,12 +190,12 @@ float AMonster::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	// if he goes below 0 hp, he will resurrect
 	if (MonsterHP <= 0)
 	{
-		Die();
+		Die = true;
 	}
 	return Damage;
 }
 
-void AMonster::Die() {
+void AMonster::DestroyAll() {
 	if (MeleeWeapon) {
 		MeleeWeapon->Destroy();
 	}

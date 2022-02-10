@@ -63,6 +63,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void finishedSwinging();
 
+	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
+		bool Die = false;
+	UFUNCTION(BlueprintCallable, Category = Collision)
+		void DestroyAll();
 
 	// Sets default values for this character's properties
 	AMonster();
@@ -95,6 +99,5 @@ public:
 	void Attack();
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 		AController* EventInstigator, AActor* DamageCauser) override;
-	void Die();
 	
 };
