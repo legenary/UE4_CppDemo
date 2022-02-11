@@ -84,6 +84,8 @@ class CPP_DEMO_API AMyHUD : public AHUD
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUDFont)
 		UFont* hudFont;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
+		UTexture2D* HealthBarImage;
 
 	FVector2D dims;
 

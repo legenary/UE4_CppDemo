@@ -50,7 +50,7 @@ void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// shit happens when you die or get hit
+	// shit happens when you die, or even get hit
 	if (Die || hitReact) {
 		return;
 	}
@@ -67,7 +67,7 @@ void AMonster::Tick(float DeltaTime)
 		return;
 	}
 
-	// start facing player
+	// when player in sight, facing player always
 	FRotator toPlayerRotation = toPlayer.Rotation();
 	toPlayerRotation.Pitch = 0;
 	RootComponent->SetWorldRotation(toPlayerRotation);
@@ -111,7 +111,6 @@ void AMonster::Tick(float DeltaTime)
 			}
 		}
 	}
-
 	
 }
 

@@ -65,14 +65,23 @@ void AMyHUD::addWidget(Widget widget) {
 void AMyHUD::DrawHealthBar() {
 	AAvatar *avatar = Cast<AAvatar>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 
-	float barWidth = 200, barHeight = 50, barPad = 12, barMargin = 50;
+	float imgW = 451.f/1.5f, imgH = 121.f/1.5f, imgMargin = 50.f,
+		barMarginY = 0.12f, barMarginX1 = 0.18f, barMarginX2 = 0.04f;
 	float percHp = avatar->getHP() / avatar->getMaxHP();
-	DrawRect(FLinearColor(0, 0, 0, 1), Canvas->SizeX - barWidth - barPad - barMargin,
-		Canvas->SizeY - barHeight - barPad - barMargin, barWidth + 2 * barPad, barHeight + 2 * barPad);
-	DrawRect(FLinearColor(1 - percHp, percHp, 0, 1), Canvas->SizeX - barWidth - barMargin,
-		Canvas->SizeY - barHeight - barMargin, barWidth*percHp, barHeight);
-	FString percHpString = FString::SanitizeFloat(percHp);
-	DrawText(percHpString, FColor::Black, Canvas->SizeX - barWidth - barMargin, Canvas->SizeY - barHeight - barMargin, hudFont);
+
+	float barX = dims.X - imgMargin - imgW * (1 - barMarginX1),
+		barY = dims.Y - imgMargin - imgH * (1 - barMarginY),
+		barW = imgW * (1 - barMarginX1 - barMarginX2) * percHp,
+		barH = imgH * (1 - barMarginY*2);
+	DrawRect(FLinearColor(1 - percHp, percHp, 0, 1), barX, barY, barW, barH);
+
+	float imgX = dims.X - imgMargin - imgW, imgY = dims.Y - imgMargin - imgH;
+	if (HealthBarImage) {
+		DrawTexture(HealthBarImage, imgX, imgY, imgW, imgH, 0, 0, 1, 1);
+	}
+
+	//FString percHpString = FString::SanitizeFloat(percHp);
+	//DrawText(percHpString, FColor::Black, dims.X - imgWidth - imgMargin, Canvas->SizeY - imgHeight - imgMargin, hudFont);
 }
 
 void AMyHUD::DrawWidgets() {
