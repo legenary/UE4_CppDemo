@@ -100,7 +100,7 @@ public:
 	void DrawWidgets();
 	void ClearWidgets();
 
-	void MouseClicked();
+	void LeftMouseClicked();
 	Widget* heldWidget;
 	void MouseMoved();
 };

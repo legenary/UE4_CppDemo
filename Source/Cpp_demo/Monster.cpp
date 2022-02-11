@@ -162,7 +162,7 @@ void AMonster::fireBullet() {
 	ABullet* bullet = GetWorld()->SpawnActor<ABullet>
 		(BPBullet, nozzle, RootComponent->GetComponentRotation());
 	if (bullet) {
-		bullet->shooter = this;
+		bullet->SetShooter(this);
 		bullet->damageFromHolder = this->BaseMeleeDamage;
 		bullet->ProxSphere->AddImpulse(toOpponent * BulletLaunchImpulse);
 	}

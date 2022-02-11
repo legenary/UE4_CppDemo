@@ -35,6 +35,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+
+	inline void SetShooter(ACharacter* own) { shooter = own; }
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	float existTime = 0.f;

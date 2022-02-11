@@ -98,7 +98,7 @@ void AMyHUD::ClearWidgets() {
 	widgets.Empty();
 }
 
-void AMyHUD::MouseClicked() {
+void AMyHUD::LeftMouseClicked() {
 	FVector2D mouse;
 	APlayerController* PController = GetWorld()->GetFirstPlayerController();
 	PController->GetMousePosition(mouse.X, mouse.Y);

@@ -15,7 +15,7 @@ class CPP_DEMO_API UHealthBar : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	inline void SetOwner(AMonster* mon) { owner = mon; }
+	inline void SetOwner(AMonster* character) { owner = character; }
 	
 protected:
 	// need to manually add progress bar in blueprint

@@ -3,6 +3,7 @@
 #include "PickupItem.h"
 #include "MeleeWeapon.h"
 #include "Avatar.h"
+#include "Spell.h"
 
 // Sets default values
 AAvatar::AAvatar()
@@ -49,7 +50,8 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	check(PlayerInputComponent);
 
 	InputComponent->BindAction("Inventory", IE_Pressed, this, &AAvatar::ToggleInventory);
-	InputComponent->BindAction("MouseClickedMLB", IE_Pressed, this, &AAvatar::MouseClicked);
+	InputComponent->BindAction("MouseClickedMLB", IE_Pressed, this, &AAvatar::LeftMouseClicked);
+	InputComponent->BindAction("MouseClickedMRB", IE_Pressed, this, &AAvatar::RightMouseClicked);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::StartJump);
 
 	InputComponent->BindAxis("Forward", this, &AAvatar::MoveForward);
@@ -110,16 +112,27 @@ void AAvatar::Pitch(float amount) {
 	}
 }
 
-void AAvatar::MouseClicked() {
+void AAvatar::LeftMouseClicked() {
 	APlayerController* PController = GetWorld()->GetFirstPlayerController();
 	AMyHUD* hud = Cast<AMyHUD>(PController->GetHUD());
 
 	// if inventory is open, call MouseClicked from HUD
 	if (inventoryShowing) {
-		hud->MouseClicked();
+		hud->LeftMouseClicked();
 	}
 	else {
 		Melee();
+	}
+}
+
+void AAvatar::RightMouseClicked() {
+	APlayerController* PController = GetWorld()->GetFirstPlayerController();
+	AMyHUD* hud = Cast<AMyHUD>(PController->GetHUD());
+	if (inventoryShowing) {
+		return;
+	}
+	else {
+		CastAnimation();
 	}
 }
 
@@ -203,4 +216,43 @@ void AAvatar::Melee() {
 			MeleeWeapon->ResetHitList();
 		}
 	}
+}
+
+void AAvatar::CastAnimation() {
+	if (backpack.Find("Spell")) {
+		backpack["Spell"].quantity -= 1;
+		if (!nCast) {
+			nCast++;
+		}
+		if (backpack["Spell"].quantity <= 0) {
+			// add code to make pickup item disappear
+			// ...
+		}
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "No spell left...");
+		return;
+	}
+	// invoke animation to cast
+}
+
+void AAvatar::CastSpell() {
+	// add code to spawn particles
+	// ...
+	FVector fwd = GetActorForwardVector();
+	FVector nozzle = GetMesh()->GetBoneLocation("hand_r");
+	nozzle += fwd * 10;
+
+	ASpell* spell = GetWorld()->SpawnActor<ASpell>
+		(BPSpell, nozzle, RootComponent->GetComponentRotation());
+	if (spell) {
+		spell->SetCaster(this);
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Yellow, "no spell spawned.");
+	}
+}
+
+void AAvatar::finishedCasting() {
+	nCast--;
 }

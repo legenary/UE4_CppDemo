@@ -25,15 +25,23 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = AvatarProperties)
 		int32 nMelee = 0;
+	UFUNCTION(BlueprintCallable)
+		void finishedSwinging();
+	UPROPERTY(BlueprintReadOnly, Category = AvatarProperties)
+		int32 nCast = 0;
+	UFUNCTION(BlueprintCallable)
+		void CastSpell();
+	UFUNCTION(BlueprintCallable)
+		void finishedCasting();
 	UPROPERTY(BlueprintReadOnly, Category = AvatarProperties)
 		bool Jumping = false;
-	UFUNCTION(BlueprintCallable, Category = Collision)
-		void finishedSwinging();
-	UFUNCTION(BlueprintCallable, Category = Collision)
+	UFUNCTION(BlueprintCallable)
 		void finishedJumping();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
 		UClass* BPMeleeWeapon;
 	AMeleeWeapon* MeleeWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
+		UClass* BPSpell;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
 		float BaseMeleeDamage = 5;
 
@@ -81,11 +89,13 @@ public:
 	virtual void PostInitializeComponents() override;
 
 	// AI
-	void MouseClicked();
+	void LeftMouseClicked();
+	void RightMouseClicked();
 	void StartJump();
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent, 
 		AController* EventInstigator, AActor* DamageCauser) override;
 	void Melee();
+	void CastAnimation();
 
 	
 };
