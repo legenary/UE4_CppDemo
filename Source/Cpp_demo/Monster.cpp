@@ -2,6 +2,10 @@
 
 
 #include "Monster.h"
+#include "HealthBar.h"
+
+#include "Components/WidgetComponent.h"
+
 
 AMonster::AMonster(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
@@ -20,6 +24,12 @@ AMonster::AMonster(const class FObjectInitializer& PCIP) : Super(PCIP)
 	ShootingRangeSphere = PCIP.CreateDefaultSubobject<USphereComponent>
 		(this, TEXT("Shooting Range Sphere"));
 	ShootingRangeSphere->SetupAttachment(RootComponent);
+
+	// health bar widget component
+	HealthWidgetComp = PCIP.CreateDefaultSubobject<UWidgetComponent>
+		(this, TEXT("HealthBar"));
+	HealthWidgetComp->AttachToComponent(RootComponent,
+		FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 void AMonster::PostInitializeComponents()
@@ -42,6 +52,11 @@ void AMonster::PostInitializeComponents()
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// initialize heal bar widget
+	UHealthBar* HealthBar = Cast<UHealthBar>(HealthWidgetComp->GetUserWidgetObject());
+	if (!HealthBar) { return; }
+	HealthBar->SetOwner(this);
 	
 }
 

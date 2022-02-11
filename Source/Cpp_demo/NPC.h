@@ -22,7 +22,7 @@ public:
 	ANPC(const class FObjectInitializer& PCIP);
 	// Bind properties
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision)
-		USphereComponent* ProxSphere;
+		class USphereComponent* ProxSphere;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = NPCMessage)
 		FString Name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = NPCMessage)

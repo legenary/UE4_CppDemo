@@ -25,6 +25,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		float MonsterHP = 20.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
+		float MonsterMaxHP = 20.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		int32 MonsterExp = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		UClass* BPLoot = nullptr;
@@ -36,7 +38,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		UClass* BPMeleeWeapon;
-	AMeleeWeapon* MeleeWeapon;
+	class AMeleeWeapon* MeleeWeapon;
 	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
 		int32 nMelee = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
@@ -44,7 +46,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		UClass* BPBullet;
-	ABullet* Bullet;
+	class ABullet* Bullet;
 	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
 		int32 nShoot = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
@@ -54,12 +56,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void finishedShooting();
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MonsterProperties)
-		USphereComponent* SightSphere;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MonsterProperties)
-		USphereComponent* MeleeRangeSphere;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MonsterProperties)
-		USphereComponent* ShootingRangeSphere;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+		class USphereComponent* SightSphere;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+		class USphereComponent* MeleeRangeSphere;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
+		class USphereComponent* ShootingRangeSphere;
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void finishedSwinging();
 
@@ -70,6 +72,9 @@ public:
 		bool Die = false;
 	UFUNCTION(BlueprintCallable, Category = Collision)
 		void DestroyAll();
+
+	UPROPERTY(VisibleAnywhere)
+		class UWidgetComponent* HealthWidgetComp;
 
 	// Sets default values for this character's properties
 	AMonster();

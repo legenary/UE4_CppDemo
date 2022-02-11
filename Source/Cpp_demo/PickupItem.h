@@ -26,11 +26,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
 		int32 Quantity;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision)
-		USphereComponent* ProxSphere;
+		class USphereComponent* ProxSphere;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Item)
-		UStaticMeshComponent *Mesh;
+		class UStaticMeshComponent *Mesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
-		UTexture2D* Icon;
+		class UTexture2D* Icon;
 	UFUNCTION(BlueprintNativeEvent, Category = Collision)
 		void Prox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
