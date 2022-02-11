@@ -2,6 +2,10 @@
 
 
 #include "NPC.h"
+#include "MyHUD.h"
+#include "Avatar.h"
+
+#include "Components/SphereComponent.h"
 
 // Sets default values
 ANPC::ANPC()
@@ -37,13 +41,6 @@ void ANPC::BeginPlay()
 void ANPC::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void ANPC::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 

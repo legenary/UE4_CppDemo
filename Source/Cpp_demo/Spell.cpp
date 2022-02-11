@@ -7,8 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
-
-// Sets default values
+// Constructor
 ASpell::ASpell(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
  	PrimaryActorTick.bCanEverTick = true;

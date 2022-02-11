@@ -2,6 +2,7 @@
 
 
 #include "MyHUD.h"
+#include "Avatar.h"
 
 void AMyHUD::DrawHUD() {
 	Super::DrawHUD();

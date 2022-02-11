@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#pragma once
 
-#include "Avatar.h"
+#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "Kismet/GameplayStatics.h"
 #include "Engine/Canvas.h"
+#include "Kismet/GameplayStatics.h"
 #include "MyHUD.generated.h"
 
+// A message to be sent
 struct Message
 {
 	FString message;
@@ -53,6 +53,7 @@ struct Icon
 	Icon(FString &iName, UTexture2D *iTex): name(iName), tex(iTex) {}
 };
 
+// A widget to be added to HUD
 struct Widget
 {
 	Icon icon;
@@ -71,15 +72,16 @@ struct Widget
 		return p.X > left() && p.X < right() && p.Y < bottom() && p.Y > top();
 	}
 };
-/**
- * 
- */
-
 
 UCLASS()
 class CPP_DEMO_API AMyHUD : public AHUD
 {
 	GENERATED_BODY()
+
+private:
+	FVector2D dims;
+	TArray<Message> messages;
+	TArray<Widget> widgets;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = HUDFont)
@@ -87,19 +89,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
 		UTexture2D* HealthBarImage;
 
-	FVector2D dims;
-
-	TArray<Message> messages;
-	TArray<Widget> widgets;
-	virtual void DrawHUD() override;
-	void DrawMessages();
 	void addMessage(Message msg);
 	void addWidget(Widget widget);
 
+	virtual void DrawHUD() override;
+	void DrawMessages();
 	void DrawHealthBar();
 	void DrawWidgets();
+
 	void ClearWidgets();
 
+	// Control
 	void LeftMouseClicked();
 	Widget* heldWidget;
 	void MouseMoved();

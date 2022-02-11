@@ -4,12 +4,13 @@
 #include "MeleeWeapon.h"
 #include "Monster.h"
 
-// Sets default values
+#include "Components/BoxComponent.h"
+#include "Components/StaticMeshComponent.h"
+
+// Constructor
 AMeleeWeapon::AMeleeWeapon(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
-
-	swinging = false;
-	holder = nullptr;
+	//PrimaryActorTick.bCanEverTick = true;
 
 	Mesh = PCIP.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("Mesh"));
 	RootComponent = Mesh;

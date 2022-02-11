@@ -4,13 +4,12 @@
 #include "Bullet.h"
 #include "Monster.h"
 
+#include "Components/StaticMeshComponent.h"
+#include "Components/SphereComponent.h"
+
 ABullet::ABullet(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
-	shooter = nullptr;
-
 	PrimaryActorTick.bCanEverTick = true;
-	//PrimaryActorTick.bStartWithTickEnabled = true;
-	//PrimaryActorTick.bAllowTickOnDedicatedServer = true;
 
 	Mesh = PCIP.CreateDefaultSubobject<UStaticMeshComponent>(this, TEXT("Mesh"));
 	ProxSphere = PCIP.CreateDefaultSubobject<USphereComponent>(this, TEXT("ProxSphere"));

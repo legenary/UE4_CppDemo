@@ -1,16 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#pragma once
 
-#include "Avatar.h"
-#include "MeleeWeapon.h"
-#include "Bullet.h"
+#pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Components/SphereComponent.h"
-#include "Kismet/GameplayStatics.h"
-#include "Engine/SkeletalMeshSocket.h"
 #include "Monster.generated.h"
 
 UCLASS()
@@ -20,6 +14,10 @@ class CPP_DEMO_API AMonster : public ACharacter
 
 
 public:
+	// Sets default values for this character's properties
+	AMonster(const class FObjectInitializer& PCIP);
+	virtual void PostInitializeComponents() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		float Speed = 70.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
@@ -33,13 +31,13 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		float StrikeTimeout = 2.f;
-	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
+	UPROPERTY(BlueprintReadOnly)
 		float TimeSinceLastStrike = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		UClass* BPMeleeWeapon;
 	class AMeleeWeapon* MeleeWeapon;
-	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
+	UPROPERTY(BlueprintReadOnly)
 		int32 nMelee = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		float BaseMeleeDamage = 5.f;
@@ -47,14 +45,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		UClass* BPBullet;
 	class ABullet* Bullet;
-	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
+	UPROPERTY(BlueprintReadOnly)
 		int32 nShoot = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		float BulletLaunchImpulse = 700.f;
-	UFUNCTION(BlueprintCallable, Category = Collision)
-		void fireBullet();
-	UFUNCTION(BlueprintCallable, Category = Collision)
-		void finishedShooting();
+	UFUNCTION(BlueprintCallable)
+		void FireBullet();
+	UFUNCTION(BlueprintCallable)
+		void FinishedShooting();
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 		class USphereComponent* SightSphere;
@@ -62,24 +60,19 @@ public:
 		class USphereComponent* MeleeRangeSphere;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 		class USphereComponent* ShootingRangeSphere;
-	UFUNCTION(BlueprintCallable, Category = Collision)
-		void finishedSwinging();
+	UFUNCTION(BlueprintCallable)
+		void FinishedSwinging();
 
-	UPROPERTY(BlueprintReadWrite, Category = MonsterProperties)
+	UPROPERTY(BlueprintReadWrite)
 		bool hitReact = false;
 
-	UPROPERTY(BlueprintReadOnly, Category = MonsterProperties)
+	UPROPERTY(BlueprintReadOnly)
 		bool Die = false;
-	UFUNCTION(BlueprintCallable, Category = Collision)
+	UFUNCTION(BlueprintCallable)
 		void DestroyAll();
 
 	UPROPERTY(VisibleAnywhere)
 		class UWidgetComponent* HealthWidgetComp;
-
-	// Sets default values for this character's properties
-	AMonster();
-	AMonster(const class FObjectInitializer& PCIP);
-
 
 protected:
 	// Called when the game starts or when spawned
@@ -88,22 +81,11 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	// Melee weapon intializer
-	virtual void PostInitializeComponents() override;
-
-	// Monster AI
-	inline bool isInSightSphere(float d) {
-		return d < SightSphere->GetScaledSphereRadius();
-	}
-	inline bool isInMeleeRangeSphere(float d) {
-		return d < MeleeRangeSphere->GetScaledSphereRadius();
-	}
-	inline bool isInShootingRangeSphere(float d) {
-		return d < ShootingRangeSphere->GetScaledSphereRadius();
-	}
+	// Combat
+	bool isInSightSphere(float d);
+	bool isInMeleeRangeSphere(float d);
+	bool isInShootingRangeSphere(float d);
 	void Attack();
 	virtual float TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 		AController* EventInstigator, AActor* DamageCauser) override;

@@ -2,8 +2,13 @@
 
 
 #include "PickupItem.h"
+#include "Avatar.h"
+#include "MyHUD.h"
 
-// Sets default values
+#include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
+
+// Constructor
 APickupItem::APickupItem(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -43,7 +48,7 @@ void APickupItem::Prox_Implementation(UPrimitiveComponent* OverlappedComp, AActo
 	}
 
 	AAvatar *avatar = Cast<AAvatar>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	avatar->Pick(this);
+	avatar->PickUp(this);
 
 	APlayerController *PController = GetWorld()->GetFirstPlayerController();
 	AMyHUD *hud = Cast<AMyHUD>(PController->GetHUD());

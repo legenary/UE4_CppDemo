@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -15,9 +16,9 @@ public:
 	// Sets default values for this actor's properties
 	ASpell(const class FObjectInitializer& PCIP);
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Spell)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 		class UBoxComponent* ProxBox;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Spell)
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 		class UParticleSystemComponent* Particles;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spell)
 		float DamagePerSecond = 1;

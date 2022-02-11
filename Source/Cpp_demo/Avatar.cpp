@@ -1,18 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+
+#include "Avatar.h"
+#include "MyHUD.h"
 #include "PickupItem.h"
 #include "MeleeWeapon.h"
-#include "Avatar.h"
 #include "Spell.h"
 
-// Sets default values
+#include "Engine/SkeletalMeshSocket.h"
+
+// Constructor
 AAvatar::AAvatar()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+ 	//PrimaryActorTick.bCanEverTick = true;
 
-	HP = 80;
-	maxHP = 100;
 }
 
 void AAvatar::PostInitializeComponents()
@@ -52,7 +53,7 @@ void AAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	InputComponent->BindAction("Inventory", IE_Pressed, this, &AAvatar::ToggleInventory);
 	InputComponent->BindAction("MouseClickedMLB", IE_Pressed, this, &AAvatar::LeftMouseClicked);
 	InputComponent->BindAction("MouseClickedMRB", IE_Pressed, this, &AAvatar::RightMouseClicked);
-	InputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::StartJump);
+	InputComponent->BindAction("Jump", IE_Pressed, this, &AAvatar::Jump);
 
 	InputComponent->BindAxis("Forward", this, &AAvatar::MoveForward);
 	InputComponent->BindAxis("Back", this, &AAvatar::MoveBack);
@@ -78,7 +79,7 @@ void AAvatar::MoveBack(float amount) {
 	}
 }
 void AAvatar::MoveLeft(float amount) {
-	//if (inventoryShowing) { return; }
+	if (inventoryShowing) { return; }
 	if (Controller && amount) {
 		FVector left = -GetActorRightVector();
 		AddMovementInput(left, amount);
@@ -121,7 +122,7 @@ void AAvatar::LeftMouseClicked() {
 		hud->LeftMouseClicked();
 	}
 	else {
-		Melee();
+		MeleeAnimation();
 	}
 }
 
@@ -134,6 +135,10 @@ void AAvatar::RightMouseClicked() {
 	else {
 		CastAnimation();
 	}
+}
+
+void AAvatar::Jump() {
+	Jumping = true;
 }
 
 
@@ -163,7 +168,8 @@ void AAvatar::ToggleInventory() {
 		}
 	}
 }
-void AAvatar::Pick(APickupItem *item) {
+
+void AAvatar::PickUp(APickupItem *item) {
 	if (backpack.Find(item->Name)) {
 		backpack[item->Name].quantity += item->Quantity;
 	}
@@ -172,32 +178,12 @@ void AAvatar::Pick(APickupItem *item) {
 	}
 }
 
-void AAvatar::finishedSwinging() {
-	nMelee--;
-	if (MeleeWeapon) { 
-		MeleeWeapon->swinging = false;
-		MeleeWeapon->ResetHitList();
-	}
-}
-
-void AAvatar::StartJump() {
-	Jumping = true;
-}
-
-void AAvatar::finishedJumping() {
-	Jumping = false;
-}
-
 float AAvatar::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser) {
+
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 
 	HP -= Damage;
-
-	// add some knockback that gets applied over a few frames
-	//Knockback = GetActorLocation() - DamageCauser->GetActorLocation();
-	//Knockback.Normalize();
-	//Knockback *= Damage * 500;
 
 	// if he goes below 0 hp, he will resurrect
 	if (HP <= 0)
@@ -207,7 +193,7 @@ float AAvatar::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	return Damage;
 }
 
-void AAvatar::Melee() {
+void AAvatar::MeleeAnimation() {
 	// can only increase attack number when no attack is in excution
 	if (!nMelee) {
 		nMelee++;
@@ -224,21 +210,20 @@ void AAvatar::CastAnimation() {
 		if (!nCast) {
 			nCast++;
 		}
+		// spell used up
 		if (backpack["Spell"].quantity <= 0) {
-			// add code to make pickup item disappear
-			// ...
+			backpack.Remove("Spell");
 		}
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "No spell left...");
+		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Red, "No spell left in inventory...");
 		return;
 	}
-	// invoke animation to cast
 }
 
+
+// AnimNotify functions
 void AAvatar::CastSpell() {
-	// add code to spawn particles
-	// ...
 	FVector fwd = GetActorForwardVector();
 	FVector nozzle = GetMesh()->GetBoneLocation("hand_r");
 	nozzle += fwd * 10;
@@ -249,10 +234,22 @@ void AAvatar::CastSpell() {
 		spell->SetCaster(this);
 	}
 	else {
-		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Yellow, "no spell spawned.");
+		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Yellow, "No spell spawned.");
 	}
 }
 
-void AAvatar::finishedCasting() {
+void AAvatar::FinishedSwinging() {
+	nMelee--;
+	if (MeleeWeapon) {
+		MeleeWeapon->swinging = false;
+		MeleeWeapon->ResetHitList();
+	}
+}
+
+void AAvatar::FinishedJumping() {
+	Jumping = false;
+}
+
+void AAvatar::FinishedCasting() {
 	nCast--;
 }

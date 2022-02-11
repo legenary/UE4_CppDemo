@@ -2,14 +2,21 @@
 
 
 #include "Monster.h"
+#include "Avatar.h"
+#include "MeleeWeapon.h"
+#include "Bullet.h"
 #include "HealthBar.h"
 
+#include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "Components/WidgetComponent.h"
 
 
 AMonster::AMonster(const class FObjectInitializer& PCIP) : Super(PCIP)
 {
 	PrimaryActorTick.bCanEverTick = true;
+
 	// sight sphere
 	SightSphere = PCIP.CreateDefaultSubobject<USphereComponent>
 		(this, TEXT("Sight Sphere"));
@@ -129,48 +136,7 @@ void AMonster::Tick(float DeltaTime)
 	
 }
 
-// Called to bind functionality to input
-void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
-
-void AMonster::finishedSwinging() {
-	nMelee--;	// attack instruct executed
-	if (MeleeWeapon) {
-		MeleeWeapon->swinging = false;
-		MeleeWeapon->ResetHitList();
-	}
-}
-
-void AMonster::finishedShooting() {
-	nShoot--;	// attack instruct executed
-}
-
-void AMonster::fireBullet() {
-	// fire bullet
-	FVector fwd = GetActorForwardVector();
-	FVector nozzle = GetMesh()->GetBoneLocation("hand_r");
-	nozzle += fwd * 10;
-
-	AAvatar* avatar = Cast<AAvatar>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	if (!avatar) { return; }
-
-	FVector toOpponent = avatar->GetActorLocation() - nozzle;
-	toOpponent.Normalize();
-	ABullet* bullet = GetWorld()->SpawnActor<ABullet>
-		(BPBullet, nozzle, RootComponent->GetComponentRotation());
-	if (bullet) {
-		bullet->SetShooter(this);
-		bullet->damageFromHolder = this->BaseMeleeDamage;
-		bullet->ProxSphere->AddImpulse(toOpponent * BulletLaunchImpulse);
-	}
-	else {
-		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Yellow, "no bullet spawned.");
-	}
-}
-
+// combat
 void AMonster::Attack() {
 	// not yet
 	if (TimeSinceLastStrike) {
@@ -197,6 +163,7 @@ void AMonster::Attack() {
 
 float AMonster::TakeDamage(float Damage, struct FDamageEvent const& DamageEvent,
 	AController* EventInstigator, AActor* DamageCauser) {
+
 	Super::TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 	
 	MonsterHP -= Damage;
@@ -219,4 +186,50 @@ void AMonster::DestroyAll() {
 		MeleeWeapon->Destroy();
 	}
 	Destroy();
+}
+
+// AnimNotify functions
+void AMonster::FireBullet() {
+	// fire bullet
+	FVector fwd = GetActorForwardVector();
+	FVector nozzle = GetMesh()->GetBoneLocation("hand_r");
+	nozzle += fwd * 10;
+
+	AAvatar* avatar = Cast<AAvatar>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
+	if (!avatar) { return; }
+
+	FVector toOpponent = avatar->GetActorLocation() - nozzle;
+	toOpponent.Normalize();
+	ABullet* bullet = GetWorld()->SpawnActor<ABullet>
+		(BPBullet, nozzle, RootComponent->GetComponentRotation());
+	if (bullet) {
+		bullet->SetShooter(this);
+		bullet->damageFromHolder = this->BaseMeleeDamage;
+		bullet->ProxSphere->AddImpulse(toOpponent * BulletLaunchImpulse);
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(0, 5.f, FColor::Yellow, "no bullet spawned.");
+	}
+}
+
+void AMonster::FinishedSwinging() {
+	nMelee--;	// attack instruct executed
+	if (MeleeWeapon) {
+		MeleeWeapon->swinging = false;
+		MeleeWeapon->ResetHitList();
+	}
+}
+
+void AMonster::FinishedShooting() {
+	nShoot--;	// attack instruct executed
+}
+
+bool AMonster::isInSightSphere(float d) {
+	return d < SightSphere->GetScaledSphereRadius();
+}
+bool AMonster::isInMeleeRangeSphere(float d) {
+	return d < MeleeRangeSphere->GetScaledSphereRadius();
+}
+bool AMonster::isInShootingRangeSphere(float d) {
+	return d < ShootingRangeSphere->GetScaledSphereRadius();
 }

@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#pragma once
 
-#include "Monster.h"
+#pragma once
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "HealthBar.generated.h"
 
+class AMonster;
 
 UCLASS()
 class CPP_DEMO_API UHealthBar : public UUserWidget

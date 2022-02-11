@@ -2,6 +2,8 @@
 
 
 #include "HealthBar.h"
+#include "Monster.h"
+
 #include "Components/ProgressBar.h"
 
 void UHealthBar::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
