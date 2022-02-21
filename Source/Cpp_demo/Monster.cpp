@@ -61,7 +61,7 @@ void AMonster::BeginPlay()
 	Super::BeginPlay();
 
 	// initialize heal bar widget
-	UHealthBar* HealthBar = Cast<UHealthBar>(HealthWidgetComp->GetUserWidgetObject());
+	HealthBar = Cast<UHealthBar>(HealthWidgetComp->GetUserWidgetObject());
 	if (!HealthBar) { return; }
 	HealthBar->SetOwner(this);
 	
@@ -86,6 +86,7 @@ void AMonster::Tick(float DeltaTime)
 
 
 	if (!isInSightSphere(distToPlayer)) {
+		HealthBar->SetVisibility(ESlateVisibility::Hidden);
 		return;
 	}
 
@@ -97,14 +98,17 @@ void AMonster::Tick(float DeltaTime)
 	// shooting mode
 	if (!MeleeWeapon && BPBullet) {
 		if (!isInShootingRangeSphere(distToPlayer)) {
+			HealthBar->SetVisibility(ESlateVisibility::Hidden);
 			// if outside shooting range, move to player
 			AddMovementInput(toPlayer, Speed*DeltaTime);
 		}
 		else if (isInMeleeRangeSphere(distToPlayer)) {
+			HealthBar->SetVisibility(ESlateVisibility::Visible);
 			// if inside melee range, move away from player (in slower speed)
 			AddMovementInput(-toPlayer, Speed/2*DeltaTime);
 		}
 		else {
+			HealthBar->SetVisibility(ESlateVisibility::Visible);
 			// atack
 			Attack();
 			TimeSinceLastStrike += DeltaTime;
@@ -116,6 +120,7 @@ void AMonster::Tick(float DeltaTime)
 	// melee mode
 	else {
 		if (!isInMeleeRangeSphere(distToPlayer)) {
+			HealthBar->SetVisibility(ESlateVisibility::Hidden);
 			// if outside melee range, move to player
 			AddMovementInput(toPlayer, Speed*DeltaTime);
 			if (MeleeWeapon) {
@@ -125,6 +130,7 @@ void AMonster::Tick(float DeltaTime)
 			TimeSinceLastStrike = 0;
 		}
 		else {
+			HealthBar->SetVisibility(ESlateVisibility::Visible);
 			// if inside melee range, attack
 			Attack();
 			TimeSinceLastStrike += DeltaTime;

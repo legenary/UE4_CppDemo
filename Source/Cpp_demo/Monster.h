@@ -73,6 +73,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 		class UWidgetComponent* HealthWidgetComp;
+	class UHealthBar* HealthBar;
 
 protected:
 	// Called when the game starts or when spawned
