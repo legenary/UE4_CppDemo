@@ -1,6 +1,6 @@
 # Maze and enemy: a demo for UE4 using C++
 
-This is a quick and dirty project for me to get familiar with C++ API and data structures used in Unreal Engine 4. In this project, I implemented several classes including a player character with the ability to melee and cast spell, a HUD for a health bar and callable inventory system, pickup items, a particle system for spell effect, and two types of monsters (melee and range).
+This is a quick and dirty project for me to get familiar with C++ API and data structures used in Unreal Engine 4. In this project, I implemented several classes including a player character with the ability to melee and cast spell, a HUD for a health bar and callable inventory system, pickup items, a particle system for spell effect, and two types of monsters (melee and range). You're welcome to check the source code in the folder "Source/Cpp_demo".
 
 (Another C++ Unreal project is [here (Overwatch3)](https://github.com/legenary/overwatch3).)
 
