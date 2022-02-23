@@ -18,14 +18,14 @@ In this project, two of the very basic types of monsters are implemented in a qu
 
 (2) the range monster will move towards the player up until a point that it can initiate a range attack safely (so it will be farther away than melee monster). If the player character moves toward the range monster as long as not into the melee range, it will keep shooting projectiles and not move. As soon as player are inside the melee range, it will back up until it feels safe and restart attacking. 
 
-Both monsters have a health bar floating above their heads to indicate their HP left. When taking damage, the monster will abort attack and play hit react animation. Once the HP becomes zero, a death animation will be triggered after which they are destroyed.
+Both monsters have a health bar floating above their heads to indicate their HP left. When taking damage, the monster will abort attack and play "hit react" animation. Once the HP becomes zero, a death animation will be triggered after which they are destroyed.
 
 ## 2 Pick up items and inventory system
 
 <img src="Documents/pickup.PNG" height="360px" width="615px" >
 <img src="Documents/inventory.PNG" height="360px" width="615px" >
 
-There are several pickup items that the player character can pickup by approaching them, a chair, a rock, and a blue pyramid (don't ask me why). After being picked up, the item will disappear on the map and available in the player characters backpack. The user can check what's in his backpack by calling the inventory system with `I`. When the inventory system is called, the mosue is active and the player lose the ability to move also. The icon, item name, and quantity will be shown in the inventory system. The player can use the monse to drag the icons around to arrange its backpack.
+There are several pickup items that the player character can pickup by approaching them, a chair, a rock, and a blue pyramid (don't ask me why). After being picked up, the item will disappear on the map and available in the player characters backpack. The user can check what's in his backpack by calling the inventory system with `I`. When the inventory system is called, the mosue is active and the player lose the ability to move also. The item's icon, name, and quantity will be displayed in the inventory system. The player can use the monse to drag the icons around to arrange its backpack.
 
 The game currently doesn't provide any functionality for the player to consume or destroy items in the backpack so the chair and the rock will stay there forever until the game is shut down. However, the blue pyramid actually gives the player character 5 casts of blizzard spell, and can be consumed.
 
@@ -35,7 +35,7 @@ The game currently doesn't provide any functionality for the player to consume o
 
 The player character has the basic ability to pitch and yaw, responding to mouse movement, and move towards different direction responding to `W`, `A`, `S`, `D`.
 
-The player is spawned equipped with a blunt weapon. A melee attack can be initiated by `Left Mouse Click` and will deal one-time damage to monsters. The player can also pick up blizzard spells (blue pyramid) on the map, after which the player will have 5 more casts. The blizzard spell is casted by `Right Mouse Click` and will deal continues damage to monsters if they are in the damage volume. 
+The player is spawned equipped with a blunt weapon. A melee attack can be initiated by `Left Mouse Click` and will deal one-time damage to monsters. The player can also pick up blizzard spells (blue pyramid) on the map, after which the player will have 5 more casts. The blizzard spell is casted by `Right Mouse Click` and will deal continued damage to monsters if they are in the damage volume. 
 
 
 
