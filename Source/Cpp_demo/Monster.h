@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/Pawn.h"
 #include "Monster.generated.h"
 
 UCLASS()
@@ -53,6 +54,12 @@ public:
 		void FireBullet();
 	UFUNCTION(BlueprintCallable)
 		void FinishedShooting();
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	//	class UPawnSensingComponent* PawnSensor;
+	//UFUNCTION(BlueprintCallable)
+	//	void OnSeePawn(APawn *OtherPawn);
+
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 		class USphereComponent* SightSphere;

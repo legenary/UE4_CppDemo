@@ -10,6 +10,7 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Perception/PawnSensingComponent.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -37,6 +38,14 @@ AMonster::AMonster(const class FObjectInitializer& PCIP) : Super(PCIP)
 		(this, TEXT("HealthBar"));
 	HealthWidgetComp->AttachToComponent(RootComponent,
 		FAttachmentTransformRules::KeepRelativeTransform);
+
+	// pawn sensor
+	//PawnSensor = PCIP.CreateDefaultSubobject<UPawnSensingComponent>
+	//	(this, TEXT("Pawn Sensor"));
+	//PawnSensor->SensingInterval = .25f;
+	//PawnSensor->bOnlySensePlayers = true;
+	//PawnSensor->SetPeripheralVisionAngle(30.f);
+	//PawnSensor->SightRadius = 30.f;
 }
 
 void AMonster::PostInitializeComponents()
@@ -143,6 +152,14 @@ void AMonster::Tick(float DeltaTime)
 }
 
 // combat
+//void AMonster::OnSeePawn(APawn *OtherPawn)
+//{
+//	FString message = TEXT("Saw Actor ") + OtherPawn->GetName();
+//	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, message);
+//
+//	// TODO: game-specific logic
+//}
+
 void AMonster::Attack() {
 	// not yet
 	if (TimeSinceLastStrike) {
