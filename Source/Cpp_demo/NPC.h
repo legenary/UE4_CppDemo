@@ -7,6 +7,8 @@
 #include "GameFramework/Character.h"
 #include "NPC.generated.h"
 
+class USphereComponent;
+
 UCLASS()
 class CPP_DEMO_API ANPC : public ACharacter
 {
@@ -19,7 +21,7 @@ public:
 	ANPC(const class FObjectInitializer& PCIP);
 	// Bind properties
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision)
-		class USphereComponent* ProxSphere;
+		USphereComponent* ProxSphere;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = NPCMessage)
 		FString Name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = NPCMessage)

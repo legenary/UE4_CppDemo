@@ -8,6 +8,8 @@
 #include "MeleeWeapon.generated.h"
 
 class AMonster;
+class UBoxComponent;
+class UStaticMeshComponent;
 
 UCLASS()
 class CPP_DEMO_API AMeleeWeapon : public AActor
@@ -25,9 +27,9 @@ public:
 	bool swinging = false;
 	ACharacter* holder = nullptr;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-		class UBoxComponent* ProxBox;
+		UBoxComponent* ProxBox;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-		class UStaticMeshComponent* Mesh;
+		UStaticMeshComponent* Mesh;
 	UFUNCTION(BlueprintNativeEvent, Category = Collision)
 		void Prox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);

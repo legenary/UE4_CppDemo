@@ -7,6 +7,9 @@ public class Cpp_demo : ModuleRules
 	public Cpp_demo(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+
+        //bEnforceIWYU = true;
+        //bEnableExceptions = true;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 

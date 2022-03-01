@@ -7,6 +7,7 @@
 
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Constructor
 APickupItem::APickupItem(const class FObjectInitializer& PCIP) : Super(PCIP)

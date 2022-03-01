@@ -5,8 +5,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/Pawn.h"
+//#include "GameFramework/Pawn.h"
 #include "Monster.generated.h"
+
+class AMeleeWeapon;
+class ABullet;
+class UHealthBar;
+class USphereComponent;
+class UWidgetComponent;
 
 UCLASS()
 class CPP_DEMO_API AMonster : public ACharacter
@@ -37,7 +43,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		UClass* BPMeleeWeapon;
-	class AMeleeWeapon* MeleeWeapon;
+	AMeleeWeapon* MeleeWeapon;
 	UPROPERTY(BlueprintReadOnly)
 		int32 nMelee = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
@@ -45,7 +51,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
 		UClass* BPBullet;
-	class ABullet* Bullet;
+	ABullet* Bullet;
 	UPROPERTY(BlueprintReadOnly)
 		int32 nShoot = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MonsterProperties)
@@ -62,11 +68,11 @@ public:
 
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-		class USphereComponent* SightSphere;
+		USphereComponent* SightSphere;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-		class USphereComponent* MeleeRangeSphere;
+		USphereComponent* MeleeRangeSphere;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-		class USphereComponent* ShootingRangeSphere;
+		USphereComponent* ShootingRangeSphere;
 	UFUNCTION(BlueprintCallable)
 		void FinishedSwinging();
 
@@ -79,8 +85,8 @@ public:
 		void DestroyAll();
 
 	UPROPERTY(VisibleAnywhere)
-		class UWidgetComponent* HealthWidgetComp;
-	class UHealthBar* HealthBar;
+		UWidgetComponent* HealthWidgetComp;
+	UHealthBar* HealthBar;
 
 protected:
 	// Called when the game starts or when spawned

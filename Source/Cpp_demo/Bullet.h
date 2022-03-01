@@ -8,6 +8,8 @@
 #include "Bullet.generated.h"
 
 class AMonster;
+class UStaticMeshComponent;
+class USphereComponent;
 
 UCLASS()
 class CPP_DEMO_API ABullet : public AActor
@@ -20,10 +22,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Bullet)
 		float Damage = 10;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Bullet)
-		class UStaticMeshComponent* Mesh;
+		UStaticMeshComponent* Mesh;
 	ACharacter* shooter = nullptr;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Bullet)
-		class USphereComponent* ProxSphere;
+		USphereComponent* ProxSphere;
 	UFUNCTION(BlueprintNativeEvent, Category = Collision)
 		void Prox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);

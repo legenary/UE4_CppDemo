@@ -7,6 +7,10 @@
 #include "GameFramework/Actor.h"
 #include "PickupItem.generated.h"
 
+class USphereComponent;
+class UStaticMeshComponent;
+class UTexture2D;
+
 UCLASS()
 class CPP_DEMO_API APickupItem : public AActor
 {
@@ -20,11 +24,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
 		int32 Quantity;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class USphereComponent* ProxSphere;
+		USphereComponent* ProxSphere;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-		class UStaticMeshComponent *Mesh;
+		UStaticMeshComponent* Mesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Item)
-		class UTexture2D* Icon;
+		UTexture2D* Icon;
 	UFUNCTION(BlueprintNativeEvent)
 		void Prox(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, 
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);

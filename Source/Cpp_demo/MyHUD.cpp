@@ -4,6 +4,9 @@
 #include "MyHUD.h"
 #include "Avatar.h"
 
+#include "Engine/Canvas.h"
+#include "Kismet/GameplayStatics.h"
+
 void AMyHUD::DrawHUD() {
 	Super::DrawHUD();
 

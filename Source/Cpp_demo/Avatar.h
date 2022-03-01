@@ -8,6 +8,7 @@
 #include "Avatar.generated.h"
 
 class APickupItem;
+class AMeleeWeapon;
 
 UCLASS()
 class CPP_DEMO_API AAvatar : public ACharacter
@@ -29,7 +30,7 @@ public:
 		UClass* BPMeleeWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AvatarProperties)
 		float BaseMeleeDamage = 5;
-	class AMeleeWeapon* MeleeWeapon;
+	AMeleeWeapon* MeleeWeapon;
 	UFUNCTION(BlueprintCallable)
 		void FinishedSwinging();
 

@@ -7,6 +7,9 @@
 #include "GameFramework/Actor.h"
 #include "Spell.generated.h"
 
+class UBoxComponent;
+class UparticleSystemComponent;
+
 UCLASS()
 class CPP_DEMO_API ASpell : public AActor
 {
@@ -17,9 +20,9 @@ public:
 	ASpell(const class FObjectInitializer& PCIP);
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-		class UBoxComponent* ProxBox;
+		UBoxComponent* ProxBox;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
-		class UParticleSystemComponent* Particles;
+		UParticleSystemComponent* Particles;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spell)
 		float DamagePerSecond = 1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Spell)

@@ -5,8 +5,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
-#include "Engine/Canvas.h"
-#include "Kismet/GameplayStatics.h"
 #include "MyHUD.generated.h"
 
 // A message to be sent

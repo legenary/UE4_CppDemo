@@ -8,6 +8,7 @@
 #include "HealthBar.generated.h"
 
 class AMonster;
+class UProgressBar;
 
 UCLASS()
 class CPP_DEMO_API UHealthBar : public UUserWidget
@@ -20,7 +21,7 @@ public:
 protected:
 	// need to manually add progress bar in blueprint
 	UPROPERTY(meta = (BindWidget))
-		class UProgressBar* HealthBar;
+		UProgressBar* HealthBar;
 
 	AMonster* owner;
 
